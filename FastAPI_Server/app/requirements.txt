@@ -1,0 +1,8 @@
+pandas
+jupyter
+datasets
+transformers
+
+openai
+
+dotenv
