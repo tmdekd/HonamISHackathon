@@ -145,21 +145,21 @@ AI 기반 공감형 대화를 통해 **우울, 불안, 고독감** 등의 정서
   <tr>
     <td align="center">
       <img src="./img/yeonghee_chatbot.png" width="300"/><br/>
-      <sub>영희 챗봇 화면</sub>
+      <sub>김영희(노인) 챗봇 화면</sub>
     </td>
     <td align="center">
       <img src="./img/yeonghee_weather.png" width="300"/><br/>
-      <sub>영희 날씨 UI</sub>
+      <sub>김영희(노인) 내 날씨</sub>
     </td>
   </tr>
   <tr>
     <td align="center">
       <img src="./img/yeonghee.png" width="300"/><br/>
-      <sub>영희 프로필</sub>
+      <sub>김영희(노인) 보호자 메뉴</sub>
     </td>
     <td align="center">
       <img src="./img/minsu.png" width="300"/><br/>
-      <sub>민수 프로필</sub>
+      <sub>김민수(보호자) 보호자 메뉴</sub>
     </td>
   </tr>
 </table>
