@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Parkinson Care Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family:'Noto Sans KR',sans-serif; background-color:#f3f4f6; color:#1f2937; }
+        .chat-container { height: calc(100vh - 180px); }
+        @media (min-width:768px){ .chat-container { height: calc(100vh - 140px);} }
+        .typing-indicator::after { content:'...'; animation:typing 1.5s infinite; }
+        @keyframes typing { 0%{content:'.';} 33%{content:'..';} 66%{content:'...';} }
+        .gradient-bg { background: linear-gradient(135deg,#5568be 0%,#534693 100%); }
+        .report-card { transition: all .3s ease; }
+        .report-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,.1); }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="gradient-bg text-white shadow-lg">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-brain text-2xl"></i>
+            <span class="text-xl font-bold">NeuroCare</span>
+        </div>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-indigo-800 px-4 py-2">
+        <a href="#chat" class="block py-2 text-white hover:bg-indigo-700 rounded px-2">챗봇</a>
+        <a href="#reports" class="block py-2 text-white hover:bg-indigo-700 rounded px-2">보고서</a>
+        <a href="#settings" class="block py-2 text-white hover:bg-indigo-700 rounded px-2">설정</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-6">
+    <!-- User Profile -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6 flex flex-col md:flex-row items-center">
+        <div class="w-24 h-24 rounded-full bg-indigo-100 flex items-center justify-center mb-4 md:mb-0 md:mr-6">
+            <i class="fas fa-user text-4xl text-indigo-500"></i>
+        </div>
+        <div class="text-center md:text-left">
+            <h2 class="text-2xl font-bold text-gray-800">김영희 님</h2>
+            <div class="mt-2 flex justify-center md:justify-start space-x-2">
+                <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">우울증</span>
+                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">고독감</span>
+            </div>
+        </div>
+        <div class="mt-4 md:mt-0 md:ml-auto">
+            <button id="emergencyBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <i class="fas fa-phone-alt mr-2"></i> 응급 호출
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex justify-between border-b border-gray-200 mb-6">
+        <button id="chat-tab"
+                class="tab-button active py-2 px-2 font-medium whitespace-nowrap text-indigo-600 border-b-2 border-indigo-600">
+            <i class="fas fa-comment-dots mr-2"></i> 챗봇 상담
+        </button>
+        <button id="report-tab"
+                class="tab-button py-2 px-2 font-medium whitespace-nowrap text-gray-500 hover:text-indigo-500 border-b-2 border-transparent">
+            <i class="fas fa-cloud-sun mr-2"></i> 내 날씨
+        </button>
+        <button id="caregiver-tab"
+                class="tab-button py-2 px-2 font-medium whitespace-nowrap text-gray-500 hover:text-indigo-500 border-b-2 border-transparent">
+            <i class="fas fa-user-shield mr-2"></i> 보호자 모드
+        </button>
+    </div>
+
+    <!-- Chat -->
+    <div id="chat-section" class="tab-content">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="gradient-bg text-white p-4 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-3">
+                    <i class="fas fa-robot text-indigo-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold">NeuroCare 챗봇</h3>
+                    <p class="text-xs text-indigo-100">공감형 AI 상담사</p>
+                </div>
+                <div class="ml-auto flex space-x-2">
+                    <button class="text-white hover:text-indigo-200"><i class="fas fa-microphone"></i></button>
+                    <button class="text-white hover:text-indigo-200"><i class="fas fa-volume-up"></i></button>
+                </div>
+            </div>
+
+            <div class="chat-container p-4 overflow-y-auto">
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2 flex-shrink-0">
+                            <i class="fas fa-robot text-indigo-600"></i>
+                        </div>
+                        <div class="bg-indigo-50 rounded-lg p-3 max-w-xs md:max-w-md">
+                            <p class="text-gray-800">안녕하세요, 영희님! 오늘 기분은 어떠세요? 저와 대화 나누실래요?</p>
+                            <p class="text-xs text-gray-500 mt-1">오전 9:30</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-200 p-4 bg-gray-50">
+                <div class="flex items-center">
+                    <button class="text-gray-500 hover:text-indigo-600 mr-2"><i class="fas fa-smile text-xl"></i></button>
+                    <input id="chatInput" type="text" placeholder="메시지를 입력하세요..." class="flex-1 border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <button id="sendButton" class="ml-2 bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-indigo-700">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="mt-2 flex justify-center">
+                    <button class="text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                        <i class="fas fa-microphone mr-1"></i> 음성으로 대화하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather -->
+    <div id="report-section" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-cloud-sun text-indigo-600 mr-2"></i> 내 날씨
+            </h3>
+
+            <!-- Main Weather Card (fixed size) -->
+            <div class="bg-indigo-50 rounded-xl p-6 mb-8
+              w-[560px] h-[220px] mx-auto
+              flex items-center justify-center">
+                <div class="text-[120px] leading-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caregiver -->
+    <div id="caregiver-section" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-user-shield text-indigo-600 mr-2"></i> 보호자 정보
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold text-gray-700 mb-3">주요 보호자</h4>
+                    <div class="bg-indigo-50 rounded-lg p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">김민수</p>
+                                <p class="text-sm text-gray-600">아들, 010-1234-5678</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg">
+                            <i class="fas fa-phone-alt mr-2"></i> 전화하기
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-700 mb-3">최근 알림 전송 내역</h4>
+                    <div class="space-y-3">
+                        <div class="bg-white border border-gray-200 rounded-lg p-3">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-medium text-sm">우울 지수 증가 알림</p>
+                                <span class="text-xs text-gray-500">어제 오후 3:20</span>
+                            </div>
+                            <p class="text-xs text-gray-600">우울 지수가 75%로 위험 수준입니다. 연락을 취해주세요.</p>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-3">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="font-medium text-sm">응급 호출 알림</p>
+                                <span class="text-xs text-gray-500">3일 전 오전 11:05</span>
+                            </div>
+                            <p class="text-xs text-gray-600">응급 호출이 전송되었습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-bell text-indigo-600 mr-2"></i> 알림 설정
+            </h3>
+
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium text-gray-700">우울 지수 증가 알림</p>
+                        <p class="text-xs text-gray-500">우울 지수가 60% 이상일 때 알림</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium text-gray-700">응급 호출 알림</p>
+                        <p class="text-xs text-gray-500">응급 호출 버튼 사용 시 알림</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium text-gray-700">일일 심리 상태 보고</p>
+                        <p class="text-xs text-gray-500">매일 오후 7시에 요약 보고서 발송</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg">
+                    <i class="fas fa-save mr-2"></i> 설정 저장
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation (Mobile) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+    <div class="flex justify-around">
+        <a href="#chat" class="flex flex-col items-center py-2 px-4 text-indigo-600">
+            <i class="fas fa-comment-dots text-xl"></i><span class="text-xs mt-1">챗봇</span>
+        </a>
+        <a href="#report" class="flex flex-col items-center py-2 px-4 text-gray-500">
+            <i class="fas fa-cloud-sun text-xl"></i><span class="text-xs mt-1">날씨</span>
+        </a>
+        <a href="#caregiver" class="flex flex-col items-center py-2 px-4 text-gray-500">
+            <i class="fas fa-user-shield text-xl"></i><span class="text-xs mt-1">보호자</span>
+        </a>
+        <a href="#settings" class="flex flex-col items-center py-2 px-4 text-gray-500">
+            <i class="fas fa-cog text-xl"></i><span class="text-xs mt-1">설정</span>
+        </a>
+    </div>
+</div>
+
+<!-- ✅ HTML 모달 -->
+<div id="emergencyModal" class="hidden fixed inset-0 z-50">
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/40"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <i class="fas fa-bell text-indigo-600"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-800">응급 호출 전송</h4>
+            </div>
+            <p class="mt-3 text-gray-700 leading-relaxed">
+                응급 호출이 보호자에게 전송되었습니다. 곧 연락이 올 거예요.
+            </p>
+            <div class="mt-6 flex justify-end">
+                <button id="modalCloseBtn" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Tab switching
+    const tabs = ['chat','report','caregiver'];
+    tabs.forEach(tab => {
+      const tabButton  = document.getElementById(`${tab}-tab`);
+      const tabSection = document.getElementById(`${tab}-section`);
+      if (!tabButton || !tabSection) return;
+
+      tabButton.addEventListener('click', () => {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.tab-button').forEach(b => {
+          b.classList.remove('text-indigo-600','border-indigo-600','active');
+          b.classList.add('text-gray-500','border-transparent');
+        });
+        tabSection.classList.remove('hidden');
+        tabButton.classList.add('text-indigo-600','border-indigo-600','active');
+        tabButton.classList.remove('text-gray-500','border-transparent');
+      });
+    });
+
+    // Bottom nav → delegate to tab buttons (prevent jump)
+    [
+      ['#chat','chat-tab'],
+      ['#report','report-tab'],
+      ['#caregiver','caregiver-tab']
+    ].forEach(([hash, tabId]) => {
+      const link = document.querySelector(`a[href="${hash}"]`);
+      if (!link) return;
+      link.addEventListener('click', (e) => { e.preventDefault(); document.getElementById(tabId)?.click(); });
+    });
+
+    // Modal control
+    const emergencyBtn   = document.getElementById('emergencyBtn');
+    const emergencyModal = document.getElementById('emergencyModal');
+    const modalCloseBtn  = document.getElementById('modalCloseBtn');
+    const modalBackdrop  = document.getElementById('modalBackdrop');
+
+    function openModal(){ emergencyModal.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+    function closeModal(){ emergencyModal.classList.add('hidden'); document.body.style.overflow=''; }
+
+    emergencyBtn.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', closeModal);
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // Chat send
+    const chatInput = document.getElementById('chatInput');
+    const sendButtoFn = document.getElementById('sendButton');
+    const chatContainer = document.querySelector('.chat-container .space-y-4');
+
+    async function sendMessage(){
+      const message = chatInput.value.trim();
+      if(!message) return;
+
+      const userMsgDiv = document.createElement('div');
+      userMsgDiv.className = 'flex justify-end';
+      userMsgDiv.innerHTML = `
+        <div class="bg-indigo-600 rounded-lg p-3 max-w-xs md:max-w-md">
+          <p class="text-white">${message}</p>
+          <p class="text-xs text-indigo-200 mt-1">지금</p>
+        </div>`;
+      chatContainer.appendChild(userMsgDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatInput.value = '';
+
+      const botMsgDiv = document.createElement('div');
+      botMsgDiv.className = 'flex items-start';
+      botMsgDiv.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2 flex-shrink-0">
+          <i class="fas fa-robot text-indigo-600"></i>
+        </div>
+        <div class="bg-indigo-50 rounded-lg p-3 max-w-xs md:max-w-md">
+          <p class="text-gray-800 typing-indicator">...</p>
+        </div>`;
+      chatContainer.appendChild(botMsgDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      try{
+        const response = await fetch('http://localhost:8000/api/chatbot/',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({message})
+        });
+        const data = await response.json();
+
+        const typingP = botMsgDiv.querySelector('.typing-indicator');
+        if(typingP){
+          typingP.textContent = data.reply ?? '응답을 불러오지 못했습니다.';
+          typingP.classList.remove('typing-indicator');
+          const timestamp = document.createElement('p');
+          timestamp.className = 'text-xs text-gray-500 mt-1';
+          const now = new Date();
+          const h = now.getHours(); const hours = h>12? h-12 : h; const ampm = h>=12? '오후':'오전';
+          const minutes = now.getMinutes().toString().padStart(2,'0');
+          timestamp.textContent = `${ampm} ${hours}:${minutes}`;
+          typingP.parentNode.appendChild(timestamp);
+        }
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }catch(err){
+        console.error('Error:',err);
+        const typingP = botMsgDiv.querySelector('.typing-indicator');
+        if(typingP) typingP.textContent = "응답을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendMessage(); });
+</script>
+</body>
+</html>
+<!--<script>-->
+<!--    async function loadWeather() {-->
+<!--        try {-->
+<!--            const response = await fetch('http://localhost:8000/api/addict', { method: 'POST' });-->
+<!--            const data = await response.json();-->
+
+<!--            if(data.score === null) return;-->
+
+<!--            const weatherImages = {-->
+<!--                0: "/images/sunny.png",-->
+<!--                1: "/images/cloudy.png",-->
+<!--                2: "/images/rainy.png",-->
+<!--                3: "/images/storm.png"-->
+<!--            };-->
+
+<!--            const weatherCard = document.querySelector('#report-section .bg-indigo-50 > div');-->
+<!--            if(weatherCard) {-->
+<!--                weatherCard.innerHTML = '';-->
+<!--                const img = document.createElement('img');-->
+<!--                img.src = weatherImages[data.score];-->
+<!--                img.alt = 'Weather Image';-->
+<!--                img.className = 'w-full h-full object-cover rounded-xl';-->
+<!--                weatherCard.appendChild(img);-->
+<!--            }-->
+
+<!--        } catch(err) {-->
+<!--            console.error('Weather fetch error:', err);-->
+<!--        }-->
+<!--    }-->
+
+<!--    document.getElementById('report-tab')?.addEventListener('click', loadWeather);-->
+<!--</script>-->
+<script>
+    async function loadWeather() {
+        try {
+            const response = await fetch('http://localhost:8000/api/addict', { method: 'POST' });
+            const data = await response.json();
+
+            if(data.score === null) return;
+
+            const weatherImages = {
+                0: "/images/sunny.png",
+                1: "/images/cloudy.png",
+                2: "/images/rainy.png",
+                3: "/images/storm.png"
+            };
+
+            const weatherCard = document.querySelector('#report-section .bg-indigo-50 > div');
+            if(weatherCard) {
+                weatherCard.innerHTML = ''; // 기존 내용 제거
+
+                const img = document.createElement('img');
+                img.src = weatherImages[data.score];
+                img.alt = 'Weather Image';
+
+                // 부모 박스보다 작게
+                img.className = 'w-[200px] h-[120px] object-contain rounded-xl';
+
+                weatherCard.appendChild(img);
+            }
+
+        } catch(err) {
+            console.error('Weather fetch error:', err);
+        }
+    }
+
+    document.getElementById('report-tab')?.addEventListener('click', loadWeather);
+</script>
