@@ -141,7 +141,7 @@ AI 기반 공감형 대화를 통해 **우울, 불안, 고독감** 등의 정서
 
 ## 6. 구현된 UI 화면
 
-<table>
+<table align="center">
   <tr>
     <td align="center">
       <img src="./img/yeonghee_chatbot.png" width="300"/><br/>
