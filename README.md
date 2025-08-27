@@ -6,8 +6,9 @@
 해커톤 주제는 *“AI Hub의 학습용 데이터를 활용하여 호남ICT 이노베이션스퀘어가 제시한 분야의 문제 해결”*이었으며,  
 저희 팀은 고령화 사회에서 점점 심각해지고 있는 **독거노인의 정서적·심리적 돌봄 문제**를 해결 과제로 선정했습니다.
 
-![](./img/honamishackathon_poster.jpg)
-
+<p align="center">
+  <img src="img/honamishackathon_poster.jpg"/>
+</p>
 
 <br>
 
