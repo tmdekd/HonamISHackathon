@@ -8,6 +8,9 @@
 
 ![](./img/honamishackathon_poster.jpg)
 
+
+<br>
+
 ## 혼자 계신 어르신들의 마음을 돌보는 AI 동반자
 
 ![](./img/banner_img.png)
